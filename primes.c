@@ -4,16 +4,16 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-int 
+int
 prime_filter(int process[2])
 {
 	int p;
-	if (read(process[0], &p,sizeof(p)) == 0) {
+	if (read(process[0], &p, sizeof(p)) == 0) {
 		close(process[0]);
 		exit(0);
 	}
 
-	printf("%i\n",p);
+	printf("primo %i\n", p);
 
 	int fd_der[2];
 	pipe(fd_der);
@@ -26,10 +26,10 @@ prime_filter(int process[2])
 	} else if (p < 0) {
 		printf("Ocurrio un error en un fork\n");
 		exit(1);
-	}else{
+	} else {
 		close(fd_der[0]);
 		int num;
-		while(read(process[0],&num,sizeof(num)) > 0){
+		while (read(process[0], &num, sizeof(num)) > 0) {
 			if (num % p != 0) {
 				write(fd_der[1], &num, sizeof(num));
 			}
@@ -53,14 +53,14 @@ main(int argc, char *argv[])
 
 	int n = atoi(argv[1]);
 	if (n < 2) {
-		printf("el numero ingresa (%i) deber ser > 2",n);
+		printf("el numero ingresa (%i) deber ser > 2", n);
 		return 1;
 	}
 
 	int fd[2];
 	pipe(fd);
 
-	for (int i = 2; i < n; i++){
+	for (int i = 2; i < n; i++) {
 		write(fd[1], &i, sizeof(i));
 	}
 	close(fd[1]);
