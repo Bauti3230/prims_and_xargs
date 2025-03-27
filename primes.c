@@ -10,7 +10,7 @@ prime_filter(int process[2])
 	int p;
 	if (read(process[0], &p, sizeof(p)) == 0) {
 		close(process[0]);
-		exit(0);
+		return 0;
 	}
 
 	printf("primo %i\n", p);
@@ -25,7 +25,7 @@ prime_filter(int process[2])
 		prime_filter(fd_der);
 	} else if (p < 0) {
 		printf("Ocurrio un error en un fork\n");
-		exit(1);
+		return 1;
 	} else {
 		close(fd_der[0]);
 		int num;
@@ -37,7 +37,7 @@ prime_filter(int process[2])
 		close(process[0]);
 		close(fd_der[1]);
 		wait(process);
-		exit(0);
+		return 0;
 	}
 }
 
@@ -65,7 +65,5 @@ main(int argc, char *argv[])
 	}
 	close(fd[1]);
 
-	prime_filter(fd);
-
-	return 0;
+	return prime_filter(fd);
 }

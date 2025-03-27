@@ -18,7 +18,7 @@ free_buffer(char **buffer, int amm)
 	}
 }
 
-void
+int
 xargs_diy(char *command)
 {
 	char *buffer[NARGS + 2];
@@ -63,17 +63,16 @@ xargs_diy(char *command)
 		pid_t pid = fork();
 
 		if (pid == 0) {
-			execvp(command, buffer);
-			perror("execvp");
-			exit(1);
+			if (execvp(command, buffer) == -1) return 1;
 		} else if (pid < 0) {
 			perror("fork");
-			exit(1);
+			return 1;
 		} else {
 			wait(NULL);
 			free_buffer(buffer, count);
 		}
 	}
+	return 0;
 }
 
 int
@@ -84,7 +83,5 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
-	xargs_diy(argv[1]);
-
-	return 0;
+	return xargs_diy(argv[1]);
 }
